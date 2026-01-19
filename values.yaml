@@ -1,0 +1,58 @@
+# values.yaml — prod-bowchat (clean & minimal)
+
+namespace: prod-bowchat
+
+secret:
+  name: prod-bowchat-env
+
+web:
+  name: prod-bowchat-web
+  replicaCount: 1
+
+  image:
+   repository: debasmitadas13/prod-bow-chat
+   tag: V_127
+   pullPolicy: IfNotPresent
+
+  containerPort: 3000
+
+  labels:
+    app: prod-bowchat-web
+
+  resources: {}
+
+service:
+  type: NodePort
+  port: 3000
+
+worker:
+  name: prod-bowchat-worker
+  replicaCount: 1
+
+  image:
+    repository: asia-south1-docker.pkg.dev/authentic-genre-444610-p2/prod-bow-chat/prod-bow-chat
+    tag: V_124
+    pullPolicy: IfNotPresent
+
+  labels:
+    app: prod-bowchat-worker
+
+  # Worker usually runs background jobs
+  command: ["bundle", "exec", "sidekiq"]
+
+  resources: {}
+
+env:
+  RAILS_ENV: production
+  SECRET_KEY_BASE: "bf7ca92ca68a84ed68ac6bcbcb72b67ad340f8c09dfe2b3d768724f6e705ad935b997757b0ab1f80b38b863cc8f78853f7529728021a41afb7d2e0418270ddf3"
+
+  DATABASE_HOST: "34.47.203.206"
+  DATABASE_NAME: "bow_chat_stage"
+  DATABASE_USER: "postgres"
+  DATABASE_PASSWORD: "sdf8j97Yyit6"
+  DATABASE_PORT: "5432"
+
+  # Redis (local cluster or external later)
+  REDIS_URL: "redis://redis:6379"
+
+  NODE_ENV: "production"

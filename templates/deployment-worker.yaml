@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.worker.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.worker.labels.app }}
+spec:
+  replicas: {{ .Values.worker.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.worker.labels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.worker.labels.app }}
+    spec:
+      containers:
+        - name: worker
+          image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
+          imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secret.name }}
+

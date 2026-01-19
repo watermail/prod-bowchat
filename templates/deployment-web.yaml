@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.web.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.web.labels.app }}
+spec:
+  replicas: {{ .Values.web.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.web.labels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.web.labels.app }}
+    spec:
+      containers:
+        - name: web
+          image: "{{ .Values.web.image.repository }}:{{ .Values.web.image.tag }}"
+          imagePullPolicy: {{ .Values.web.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.web.containerPort }}
+          command:
+            - bundle
+            - exec
+            - rails
+            - server
+            - "-b"
+            - "0.0.0.0"
+            - "-p"
+            - "3000"
+          envFrom:
+            - secretRef:
+                name: {{ .Values.secret.name }}
+
+
